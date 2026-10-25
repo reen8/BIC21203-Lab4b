@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Information</title>
+</head>
+<body>
+    <h1>Book Information</h1>
+
+    <div id="bookDetails">Loading book information...</div>
+
+    <script>
+        async function loadBooks() {
+            const bookDetails = document.getElementById("bookDetails");
+
+            try {
+                const response = await fetch("books.json");
+
+                if (!response.ok) {
+                    throw new Error("Unable to load the book data.");
+                }
+
+                const data = await response.json();
+
+                if (!Array.isArray(data.books) || data.books.length < 2) {
+                    throw new Error("The book data is invalid.");
+                }
+
+                bookDetails.textContent = "";
+
+                const firstBook = data.books[0];
+                const secondBook = data.books[1];
+
+                const firstTitle = document.createElement("p");
+                firstTitle.textContent = "First Book Title: " + firstBook.title;
+                bookDetails.appendChild(firstTitle);
+
+                const secondAuthor = document.createElement("p");
+                secondAuthor.textContent = "Second Book Author: " + secondBook.author;
+                bookDetails.appendChild(secondAuthor);
+
+                data.books.forEach(function(book) {
+                    const heading = document.createElement("h2");
+                    heading.textContent = book.title;
+
+                    const genres = document.createElement("p");
+                    genres.textContent = "Genres: " + book.genres.join(", ");
+
+                    bookDetails.appendChild(heading);
+                    bookDetails.appendChild(genres);
+                });
+
+            } catch (error) {
+                bookDetails.textContent =
+                    "Sorry, unable to load book information. Please check the JSON file and try again.";
+            }
+        }
+
+        loadBooks();
+    </script>
+</body>
+</html>
